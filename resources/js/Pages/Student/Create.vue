@@ -1,47 +1,32 @@
 <script setup>
-    import axios from 'axios';
+import { useForm } from '@inertiajs/vue3';
 
-</script>
-
-<script>
-   export default{
-    data() {
-        return {
+    const form = useForm(
+        {
            name:'',
            dob: '',
            address: '',
            gender: '', 
            district: '',
-           languages: []
+           langs: [],
+           photo:null
         }
-        
-    },
-    methods: {
-       async submit(){
-           await axios.post('http://127.0.0.1:8000/students/store', {
-                name:this.name,
-                dob:this.dob,
-                address:this.address,
-                gender:this.gender,
-                district:this.district,
-                languages:this.languages
+    );
 
-            }).then(function (response) {
-                console.log(response.msg);
-            })
-        }
-    },
-   }
-
+    const submit = ()=>{
+        form.post("/students")
+    }
 
 </script>
+
+
 
 
 <template>
     <div>{{ name }}</div>
      <div class="container">
        <br>
-  <form @submit.prevent="this.submit" class="form">
+  <form @submit.prevent="submit" class="form" enctype="multipart/form-data">
                             <div class="mb-4 form-group">
                                 <label
                                     
@@ -51,7 +36,7 @@
                                     type="text"
                                     class="form-control"
                                     placeholder="Enter Name"
-                                    v-model="name"
+                                    v-model="form.name"
                                      />
 
                             </div>
@@ -64,7 +49,7 @@
                                 <textarea
                                     class="form-control" 
 
-                                    placeholder="Enter Address" v-model="address"></textarea>
+                                    placeholder="Enter Address" v-model="form.address"></textarea>
                             </div>
                             <div class="mb-4 form-group">
                                 <label
@@ -75,7 +60,7 @@
                                     type="date"
                                     class="form-control"
                                     placeholder="Enter Date of Birth"
-                                    id="dob" v-model="dob"
+                                    id="dob" v-model="form.dob"
                                      />
                             </div>
                             <div class="mb-4 form-group">
@@ -88,14 +73,14 @@
                                     class="form-control"
                                      name="gender"
                                     
-                                    value="male" v-model="gender"
+                                    value="male" v-model="form.gender"
                                      />Male &nbsp;
                                      <input
                                     type="radio"
                                     class="form-control"
                                      name="gender"
                                    
-                                    value="female" v-model="gender"
+                                    value="female" v-model="form.gender"
                                      />Female
                             </div>
                             <div class="mb-4 form-group">
@@ -103,7 +88,7 @@
                                     
                                     class="block text-gray-700 text-sm font-bold mb-2">
                                     District:</label>
-                                    <select class="form-control" name=""  v-model="district">
+                                    <select class="form-control" name=""  v-model="form.district">
                                       <option disabled value="">Select one</option>
                                       <option>Dhaka</option>
                                       <option>Narayanganj</option>
@@ -119,30 +104,30 @@
                                 <input
                                     type="checkbox"
                                     class="form-control"
-                                    name="language"
+                                   
                                     
-                                    value="PHP" v-model="language"
+                                    value="PHP" v-model="form.langs"
                                      /> PHP &nbsp;
                                      <input
                                     type="checkbox"
                                     class="form-control"
-                                    name="language"
                                     
-                                    value="Javascript" v-model="language"
+                                    
+                                    value="Javascript" v-model="form.langs"
                                      /> Javascript &nbsp;
                                      <input
                                     type="checkbox"
                                     class="form-control"
-                                    name="language"
+                                    
                                    
-                                    value="Laravel" v-model="language"
+                                    value="Laravel" v-model="form.langs"
                                      /> Laravel &nbsp;
                                      <input
                                     type="checkbox"
                                     class="form-control"
-                                    name="language"
+                                    
                                    
-                                    value="React" v-model="language"
+                                    value="React" v-model="form.langs"
                                      /> React
                             </div>
                             <div class="mb-4 form-group">
@@ -152,9 +137,7 @@
                                     Photo:</label>
                                 <input
                                     type="file"
-                                    class="form-control"
-                                    name="photo"
-                                     
+                                    class="form-control" @input="form.photo = $event.target.files[0]"
                                      />
                             </div>
                             <button type="submit" class="btn btn-success">

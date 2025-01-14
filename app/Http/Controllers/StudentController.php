@@ -13,7 +13,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::all();
+        return Inertia::render('Student/Index', compact('students'));
     }
 
     /**
@@ -30,6 +31,16 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $student = new Student($request->all());
+        $langs = json_encode($request->langs);
+        $student ['languages'] = $langs;
+
+        if ($image = $request->file('photo')) {
+            $destinationPath = 'images/';
+            $postImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $postImage);
+            $student['photo'] = $destinationPath . $postImage;
+        } 
+        //return $student;
         $student->save();
 
         return redirect()->route('students.index')->with('msg', "Success");
